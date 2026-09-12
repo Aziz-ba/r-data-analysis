@@ -1,43 +1,44 @@
-# 📊 R Data Analysis — Statistics, Machine Learning & Visualization
+# 📊 R Data Analysis — Regression, Classification & Football Analytics
 
-A collection of **data-analysis and machine-learning work in R**, covering regression, classification, exploratory data analysis and data visualization on real datasets.
+A consolidated tour of **data analysis and machine learning in R**: linear regression,
+binary classification with hand-built evaluation metrics, and an exploratory sports-analytics
+study — all tied together in one narrative report.
 
----
-
-## 📁 Contents
-
-| Folder | Focus |
-|--------|-------|
-| [`TD1/`](TD1/) | Core modeling: linear regression on the **Boston housing** dataset (`MASS`), classification on **Social Network Ads**, and analysis of **Ligue 1 2017/18** football data |
-| [`TP1/`](TP1/) | R Markdown notebooks — **data visualization**, network analysis, and applied statistics exercises |
-| [`ExamenR/`](ExamenR/) | Exam exercises solved in R |
-
-Datasets included: `Boston` (via the `MASS` package), [`Social_Network_Ads.csv`](TD1/Social_Network_Ads.csv), [`ligue1_17_18.csv`](TD1/ligue1_17_18.csv).
+👉 **Start here:** [`analysis.Rmd`](analysis.Rmd) — a knittable R Markdown report that walks
+through every analysis with question → method → interpretation. The original per-exercise
+scripts are kept under [`TD1/`](TD1/), [`TP1/`](TP1/) and [`ExamenR/`](ExamenR/).
 
 ---
 
-## 🔬 Techniques covered
+## 📑 What's inside
 
-- **Regression** — train/test splitting, linear models, prediction & error analysis
-- **Classification** — predicting purchase behavior from demographic features
-- **Exploratory data analysis** — summary statistics, distributions
-- **Data visualization** — base R plots and `ggplot2`-style graphics in R Markdown
-- **Reproducible reports** — analysis written as `.Rmd` notebooks
+| Section | Dataset | Technique |
+|---------|---------|-----------|
+| **Marketing mix** | `datarium::marketing` | Multiple linear regression — which ad channel drives sales |
+| **Boston housing** | `MASS::Boston` | Regression + correlation heatmap — drivers of home value (`lstat`, `rm`) |
+| **Social Network Ads** | `Social_Network_Ads.csv` | Logistic regression + confusion-matrix metrics (accuracy / specificity / sensitivity) |
+| **Ligue 1 2017/18** | `ligue1_17_18.csv` | Exploratory football analytics (possession, goal difference vs points) |
+| **Network viz** | `TP1/*.Rmd` | Data-visualization exercises |
 
 ---
 
-## 🚀 Run it
+## 🔑 Highlights
 
-Open any script in **RStudio** and run it, or from the R console:
+- **Interpretation over black boxes** — the classification section computes accuracy,
+  specificity and sensitivity **by hand** from the confusion matrix, so the trade-offs are explicit.
+- **Feature reasoning** — correlation heatmaps and coefficient reading, not just fitting.
+- **A real domain question** on Ligue 1 data (what separates the top of the table).
+
+---
+
+## 🚀 Reproduce it
 
 ```r
-# install once
-install.packages(c("MASS", "ggplot2"))
-
-source("TD1/Example1.R")
-# or knit an R Markdown report:
-rmarkdown::render("TP1/TP3_DataViz_Nom_Prenom.Rmd")
+install.packages(c("MASS", "datarium", "ggplot2", "corrplot", "dplyr"))
+rmarkdown::render("analysis.Rmd")   # produces analysis.html
 ```
+
+Or open any script in `TD1/` / `TP1/` in RStudio and run it directly.
 
 ---
 
@@ -45,9 +46,8 @@ rmarkdown::render("TP1/TP3_DataViz_Nom_Prenom.Rmd")
 
 ![R](https://img.shields.io/badge/R-276DC3?style=flat-square&logo=r&logoColor=white)
 ![RStudio](https://img.shields.io/badge/RStudio-75AADB?style=flat-square&logo=rstudio&logoColor=white)
-![R Markdown](https://img.shields.io/badge/R_Markdown-198CE7?style=flat-square&logo=r&logoColor=white)
 
-R · MASS · ggplot2 · R Markdown · statistical modeling
+R · MASS · datarium · ggplot2 · corrplot · R Markdown
 
 ---
 

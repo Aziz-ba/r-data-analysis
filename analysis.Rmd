@@ -1,0 +1,122 @@
+---
+title: "R Data Analysis — Regression, Classification & Football Analytics"
+author: "Aziz BENAYED"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, fig.width = 7)
+```
+
+# Overview
+
+This report brings three strands of R work into one narrative: **linear regression**,
+**binary classification with proper evaluation metrics**, and an **exploratory football
+analytics** study. Each section states the question, the method, and how to read the result.
+
+---
+
+# 1. Linear regression
+
+## 1a. Marketing spend → sales (`datarium::marketing`)
+
+**Question:** which advertising channel best explains sales?
+
+```{r marketing}
+library(datarium)
+data("marketing", package = "datarium")
+summary(marketing)
+model <- lm(sales ~ youtube + facebook + newspaper, data = marketing)
+summary(model)
+```
+
+Reading it: the coefficients and their p-values rank the channels. In this dataset the
+**YouTube** and **Facebook** budgets carry the signal, while **newspaper** typically adds
+little once the others are present — a classic multicollinearity / channel-attribution story.
+
+## 1b. Boston housing (`MASS::Boston`)
+
+**Question:** how do neighbourhood attributes relate to median home value (`medv`)?
+
+```{r boston}
+library(MASS)
+library(corrplot)
+corrplot(cor(Boston), method = "color", tl.cex = 0.7)
+lm_medv <- lm(medv ~ lstat + age + rm, data = Boston)
+summary(lm_medv)
+```
+
+The correlation matrix and model show the well-known structure of this dataset: value falls
+sharply as **`lstat`** (% lower-status population) rises and grows with **`rm`** (rooms per
+dwelling). It's a compact case study in reading coefficients and a correlation heatmap.
+
+---
+
+# 2. Classification — Social Network Ads
+
+**Question:** can we predict whether a user **purchases** from their **age** and
+**estimated salary**?
+
+```{r classification}
+df <- read.csv("TD1/Social_Network_Ads.csv")
+df <- df[, c("Age", "EstimatedSalary", "Purchased")]
+
+set.seed(42)
+idx <- sample(seq_len(nrow(df)), 0.75 * nrow(df))
+train <- df[idx, ]; test <- df[-idx, ]
+
+model <- glm(Purchased ~ Age + EstimatedSalary, data = train, family = "binomial")
+prob <- predict(model, newdata = test, type = "response")
+pred <- ifelse(prob > 0.5, 1, 0)
+cm <- table(pred, test$Purchased)
+cm
+```
+
+We evaluate with a hand-written metrics helper (accuracy / specificity / sensitivity) rather
+than a black-box call, to make the confusion matrix explicit:
+
+```{r metrics}
+metrics <- function(CM) {
+  acc <- (CM[1,1] + CM[2,2]) / sum(CM)
+  spc <- CM[1,1] / sum(CM[1, ])
+  sen <- CM[2,2] / sum(CM[2, ])
+  list(accuracy = acc, specificity = spc, sensitivity = sen)
+}
+metrics(cm)
+```
+
+Age and salary are strong, separable predictors of purchase, so a simple logistic model
+already classifies well — and the specificity/sensitivity split shows *where* it errs.
+
+---
+
+# 3. Football analytics — Ligue 1 2017/18
+
+**Question:** what team traits go with finishing high in the table?
+
+```{r football}
+library(ggplot2)
+l1 <- read.csv("TD1/ligue1_17_18.csv", sep = ";")
+ggplot(l1, aes(x = ball.possession.per.game.average, y = Points, label = Team)) +
+  geom_point(color = "#29B5E8", size = 3) +
+  geom_text(vjust = -0.8, size = 3) +
+  labs(title = "Points vs average ball possession — Ligue 1 2017/18",
+       x = "Avg ball possession per game (%)", y = "Points")
+cor(l1$Difference.goals, l1$Points)
+```
+
+Unsurprisingly, **goal difference** correlates very strongly with **points**, and the
+possession-vs-points scatter separates the dominant sides (PSG) from the pack — a small,
+readable sports-analytics EDA.
+
+---
+
+# Takeaways
+
+- Regression: how to fit, read coefficients, and use a correlation heatmap to pick features.
+- Classification: a from-scratch confusion-matrix evaluation (accuracy / specificity / sensitivity).
+- EDA: framing and visualizing a domain question on real sports data.
