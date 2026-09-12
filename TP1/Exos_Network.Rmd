@@ -1,0 +1,373 @@
+---
+title: "CH4 : Visualisation des donnees reseaux"
+subtitle: " Exos"
+author: Nom Prenom
+output: 
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+
+```{r setup, warning = FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Question 1 
+
+Charger les deux librairies  `igraph`, `dplyr`,  `RColorBrewer`, `visNetwork`, `ggraph`, `maps` et `geosphere`
+
+```{r message=FALSE, warning = FALSE}
+library('igraph')
+library(dplyr)
+#install.packages("RColorBrewer")
+library(RColorBrewer)
+library('visNetwork') 
+library(ggraph)
+library('maps')
+library('geosphere')
+```
+
+
+# Question 2 
+
+Charger les donnees `Dataset1-Media-Example-EDGES.csv`, `Dataset1-Media-Example-NODES.csv`, `Dataset3-Airlines-EDGES.csv` ey  `Dataset3-Airlines-NODES.csv`. Utiliser la fonction `head` pour afficher un echantillon de donnees.
+
+```{r message=FALSE}
+
+media_edges <-read.csv("Dataset1-Media-Example-EDGES.csv") 
+media_nodes <-read.csv("Dataset1-Media-Example-NODES.csv")
+flight_edges <-read.csv("Dataset3-Airlines-EDGES.csv")
+flight_nodes <-read.csv("Dataset3-Airlines-NODES.csv")
+
+```
+
+
+
+```{r message=FALSE}
+head(media_edges)
+head(media_nodes)
+
+```
+
+
+# Question 3
+
+Convertir les donnees brutes en un objet reseau igraph . Pour ce faire, utiliser la `graph_from_data_frame()` fonction, qui prend deux data frames : `d`  : les liens du reseau et `vertices` : les noeuds du reseau
+
+```{r }
+net <- graph_from_data_frame(d=media_edges, vertices=media_nodes, directed=T) 
+net
+```
+
+Les deux nombres qui suivent `(17 49)` font reference au nombre de noeuds et d'aretes dans le graphe. La description repertorie egalement les attributs de noeud et de bord, par exemple :
+
+* `(g/c)` -  attribut de caractere au niveau du graphique
+* `(v/c)` -  attribut de caractere au niveau du sommet
+* `(e/n)` -  attribut numerique au niveau du bord
+
+# Question 4
+
+Afficher les noueds, les liens et leurs attributs `type` et `media`. Afficher la liste de liens 
+
+```{r }
+E(net)        
+
+```
+
+```{r }
+V(net)       
+
+```
+
+```{r }
+E(net)$type  # l'attribut "type" de liens 
+
+```
+
+```{r }
+V(net)$media # l'attribut "media" de noeuds
+
+```
+
+```{r }
+as_edgelist(net, names=T) # liste de noueds 
+
+```
+
+
+# Question 5
+
+Utiliser la fonction `plot` pour visualiser le reseau 
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+plot(net)
+
+```
+
+# Question 6
+
+Supprimer les boucles du graphique. visualiser a nouveau le reseau. utiliser  le paramete `vertex.label=NA` pour supprimer le lables  et le parametre `edge.arrow.size=.4` pour definir la taille des liens 
+
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+net2 <- simplify(net, remove.multiple = F, remove.loops = T) 
+
+plot(net2, edge.arrow.size=.4,vertex.label=NA)
+
+
+```
+
+
+# Question 7
+
+Ajouter les labels 
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+plot(net2, edge.arrow.size=0.2, dge.color="orange",
+     vertex.color="orange", vertex.frame.color="gray",
+     vertex.label=V(net)$media, vertex.label.color="black")
+      
+```
+
+
+# Question 8
+
+Utiliser la taille et la couleur des noueds pour encoder le type du media et la taille de l audience 
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+ plot(net2, edge.arrow.size=E(net)$weight/20, edge.width=E(net)$weight/5,
+     edge.color="orange",edge.curved=.1,vertex.size = V(net)$audience.size/2,
+     vertex.color=V(net)$media.type, vertex.frame.color="gray",
+     vertex.label=V(net)$media, vertex.label.color="black")
+
+```
+
+# Question 9
+
+Transformer le reseau obtenu a la question 6 en un reseau avec une disposition circulaire fixe 
+
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+l <- layout_in_circle(net2)
+plot(net2, layout=l,vertex.color=V(net)$media.type)
+
+```
+
+# Question 10
+
+Utiliser la taille et la couleur des noueds pour encoder le type du media et la taille de l audience dans un reseau a disposition circulaire fixe
+
+
+```{r}
+
+
+pal <- brewer.pal(3,"Accent")
+labelnet <- factor(V(net)$type.label, levels = c("Newspaper", "TV", "Online"))
+```
+  
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+
+l <- layout_in_circle(net2)
+plot(net2, layout=l, edge.arrow.size=E(net)$weight/20, edge.width=E(net)$weight/5,
+     edge.color="orange",edge.curved=.1,vertex.size = V(net)$audience.size/2,
+     vertex.color=pal[V(net)$media.type], vertex.frame.color="gray",
+     vertex.label=V(net)$media, vertex.label.color="black")
+legend("topleft",bty = "o",cex = 1.5,pch=c(15,17),
+       legend=levels(labelnet),
+       fill=pal, border=NA)
+
+
+```
+
+# Question 11
+
+Utiliser la librairie `ggraph` pour visualiser le reseau 
+
+```{r fig.align="center",fig.width = 10, fig.height = 7}
+
+ggraph(net2,  layout = 'lgl') +
+  geom_edge_arc(color="gray", strength=0.3) +            
+  geom_node_point(color="orange", aes(size = audience.size)) +     
+  geom_node_text(aes(label = media), size=3, color="gray50", repel=T) +
+  theme_void()
+
+```
+
+
+
+# Question 12 
+
+Ajouter une carte des Etats-Unis. Puis ajouter un point sur la carte pour chaque aeroport 
+
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+tab <- table(flight_edges$Source)
+big.id <- names(tab)[tab>10]
+airports <- flight_nodes[flight_nodes$ID %in% big.id,]
+flights  <- flight_edges[flight_edges$Source %in% big.id & 
+                    flight_edges$Target %in% big.id, ]
+```
+
+
+```{r fig.align="center",fig.width = 15, fig.height = 15}
+# Plot a map of the united states:
+map("state", col="gray", fill=TRUE, bg="white", lwd=0.1)
+
+# Add a point on the map for each airport:
+points(x=airports$longitude, y=airports$latitude, pch=19, 
+       cex=airports$Visits/70, col="orange")
+
+```
+
+# Question 13
+
+Visualiser les connexions entre les aeroports sur la carte  
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+col.1 <- adjustcolor("orange red", alpha=0.4)
+col.2 <- adjustcolor("orange", alpha=0.4)
+edge.pal <- colorRampPalette(c(col.1, col.2), alpha = TRUE)
+edge.col <- edge.pal(100)
+```
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+ # Plot a map of the united states:
+ map("state", col="gray", fill=TRUE, bg="white", lwd=0.1)
+ 
+ # Add a point on the map for each airport:
+ points(x=airports$longitude, y=airports$latitude, pch=19, 
+        cex=airports$Visits/70, col="orange")
+ 
+ for(i in 1:nrow(flights))  {
+     node1 <- airports[airports$ID == flights[i,]$Source,]
+     node2 <- airports[airports$ID == flights[i,]$Target,]
+     
+     arc <- gcIntermediate( c(node1[1,]$longitude, node1[1,]$latitude),
+     c(node2[1,]$longitude, node2[1,]$latitude), n=1000, addStartEnd=TRUE )
+     
+     edge.ind <- round(100*flights[i,]$Freq / max(flights$Freq))
+     
+     lines(arc, col=edge.col[edge.ind], lwd=edge.ind/30)
+  }
+
+```
+
+# Question 14
+
+Ajouter des clusters au reseau obtenu a la question 6
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+
+clp <- cluster_optimal(net2)
+plot(clp, net2)
+
+```
+
+
+# Question 15
+
+Ajouter des clusters au reseau obtenu a la question 8
+
+```{r fig.align="center",fig.width = 15, fig.height = 10}
+ 
+clp <- cluster_optimal(net2)
+#class(clp)
+#clp$membership  = V(net)$media.type
+plot(clp, net2, edge.arrow.size=E(net)$weight/20, edge.width=E(net)$weight/5
+     ,edge.curved=.1,vertex.size = V(net)$audience.size/2,
+     vertex.color=V(net)$media.type, vertex.frame.color="gray",
+     vertex.label=V(net)$media, vertex.label.color="black")
+```
+
+
+# Question 16
+
+Trier la matrice d'adjacence en fonction de la taille de l'audience et ensuite.  Visualiser la matrice d'adjacence
+
+```{r fig.align="center",fig.width = 10, fig.height = 7}
+
+ sort_nodes <- media_nodes[order(media_nodes$audience.size), ] 
+ col_nodes <-  sort_nodes$id
+
+
+```
+
+```{r fig.align="center",fig.width = 10, fig.height = 7}
+
+netm2 <- as_adjacency_matrix(net2, attr="weight", sparse=F)
+ netm2 <-netm2[col_nodes, col_nodes]
+colnames(netm2) <- sort_nodes$media
+ rownames(netm2) <- sort_nodes$media
+ 
+ palf <- colorRampPalette(c("gold", "red")) 
+ 
+ heatmap(netm2, Rowv = NA, Colv = NA, col = palf(100), 
+         scale="none", margins=c(10,10) )
+```
+
+# Question 17
+
+Visualiser la matrice d'adjacence sans la trier 
+
+```{r fig.align="center",fig.width = 10, fig.height = 7}
+
+
+
+```
+
+# Extra 
+
+```{r fig.align="center",fig.width = 10, fig.height = 7}
+
+
+# visNetwork(media_nodes, media_edges, height = "500px") %>%
+#   visIgraphLayout(layout = "layout_in_circle") %>%
+#   visNodes(size = 10) %>%
+#   visOptions(highlightNearest = list(enabled = T, hover = T), 
+#              nodesIdSelection = T)
+
+```
+
+
+```{r fig.align="center",fig.width = 10, fig.height = 7}
+
+ 
+
+# vis.nodes <- media_nodes
+# vis.links <- media_edges
+# 
+# vis.nodes$shape  <- "dot"  
+# vis.nodes$shadow <- TRUE # Nodes will drop shadow
+# vis.nodes$title  <- vis.nodes$media # Text on click
+# vis.nodes$label  <- vis.nodes$type.label # Node label
+# vis.nodes$size   <- vis.nodes$audience.size # Node size
+# vis.nodes$borderWidth <- 2 # Node border width
+# 
+# vis.nodes$color.background <- c("slategrey", "tomato", "gold")[media_nodes$media.type]
+# vis.nodes$color.border <- "black"
+# vis.nodes$color.highlight.background <- "orange"
+# vis.nodes$color.highlight.border <- "darkred"
+# 
+# visNetwork(vis.nodes, vis.links)
+# 
+# vis.links$width <- 1+media_edges$weight/8 # line width
+# vis.links$color <- "gray"    # line color  
+# vis.links$arrows <- "middle" # arrows: 'from', 'to', or 'middle'
+# vis.links$smooth <- FALSE    # should the edges be curved?
+# vis.links$shadow <- FALSE    # edge shadow
+# 
+# visnet <- visNetwork(vis.nodes, vis.links)
+# visOptions(visnet, highlightNearest = TRUE, selectedBy = "type.label")
+
+```
+
+
+
+

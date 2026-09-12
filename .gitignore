@@ -1,0 +1,6 @@
+.RData
+.Rhistory
+.Rproj.user/
+*.zip
+*.html
+.DS_Store
