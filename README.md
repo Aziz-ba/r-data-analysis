@@ -1,10 +1,10 @@
-# 📊 R Data Analysis — Regression, Classification & Football Analytics
+# 📊 R Data Analysis - Regression, Classification & Football Analytics
 
 A consolidated tour of **data analysis and machine learning in R**: linear regression,
 binary classification with hand-built evaluation metrics, and an exploratory sports-analytics
-study — all tied together in one narrative report.
+study - all tied together in one narrative report.
 
-👉 **Start here:** [`analysis.Rmd`](analysis.Rmd) — a knittable R Markdown report that walks
+👉 **Start here:** [`analysis.Rmd`](analysis.Rmd) - a knittable R Markdown report that walks
 through every analysis with question → method → interpretation. The original per-exercise
 scripts are kept under [`TD1/`](TD1/), [`TP1/`](TP1/) and [`ExamenR/`](ExamenR/).
 
@@ -14,8 +14,8 @@ scripts are kept under [`TD1/`](TD1/), [`TP1/`](TP1/) and [`ExamenR/`](ExamenR/)
 
 | Section | Dataset | Technique |
 |---------|---------|-----------|
-| **Marketing mix** | `datarium::marketing` | Multiple linear regression — which ad channel drives sales |
-| **Boston housing** | `MASS::Boston` | Regression + correlation heatmap — drivers of home value (`lstat`, `rm`) |
+| **Marketing mix** | `datarium::marketing` | Multiple linear regression - which ad channel drives sales |
+| **Boston housing** | `MASS::Boston` | Regression + correlation heatmap - drivers of home value (`lstat`, `rm`) |
 | **Social Network Ads** | `Social_Network_Ads.csv` | Logistic regression + confusion-matrix metrics (accuracy / specificity / sensitivity) |
 | **Ligue 1 2017/18** | `ligue1_17_18.csv` | Exploratory football analytics (possession, goal difference vs points) |
 | **Network viz** | `TP1/*.Rmd` | Data-visualization exercises |
@@ -24,9 +24,9 @@ scripts are kept under [`TD1/`](TD1/), [`TP1/`](TP1/) and [`ExamenR/`](ExamenR/)
 
 ## 🔑 Highlights
 
-- **Interpretation over black boxes** — the classification section computes accuracy,
+- **Interpretation over black boxes** - the classification section computes accuracy,
   specificity and sensitivity **by hand** from the confusion matrix, so the trade-offs are explicit.
-- **Feature reasoning** — correlation heatmaps and coefficient reading, not just fitting.
+- **Feature reasoning** - correlation heatmaps and coefficient reading, not just fitting.
 - **A real domain question** on Ligue 1 data (what separates the top of the table).
 
 ---

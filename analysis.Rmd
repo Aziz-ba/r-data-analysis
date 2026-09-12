@@ -1,5 +1,5 @@
 ---
-title: "R Data Analysis — Regression, Classification & Football Analytics"
+title: "R Data Analysis - Regression, Classification & Football Analytics"
 author: "Aziz BENAYED"
 output:
   html_document:
@@ -36,7 +36,7 @@ summary(model)
 
 Reading it: the coefficients and their p-values rank the channels. In this dataset the
 **YouTube** and **Facebook** budgets carry the signal, while **newspaper** typically adds
-little once the others are present — a classic multicollinearity / channel-attribution story.
+little once the others are present - a classic multicollinearity / channel-attribution story.
 
 ## 1b. Boston housing (`MASS::Boston`)
 
@@ -56,7 +56,7 @@ dwelling). It's a compact case study in reading coefficients and a correlation h
 
 ---
 
-# 2. Classification — Social Network Ads
+# 2. Classification - Social Network Ads
 
 **Question:** can we predict whether a user **purchases** from their **age** and
 **estimated salary**?
@@ -90,11 +90,11 @@ metrics(cm)
 ```
 
 Age and salary are strong, separable predictors of purchase, so a simple logistic model
-already classifies well — and the specificity/sensitivity split shows *where* it errs.
+already classifies well - and the specificity/sensitivity split shows *where* it errs.
 
 ---
 
-# 3. Football analytics — Ligue 1 2017/18
+# 3. Football analytics - Ligue 1 2017/18
 
 **Question:** what team traits go with finishing high in the table?
 
@@ -104,13 +104,13 @@ l1 <- read.csv("TD1/ligue1_17_18.csv", sep = ";")
 ggplot(l1, aes(x = ball.possession.per.game.average, y = Points, label = Team)) +
   geom_point(color = "#29B5E8", size = 3) +
   geom_text(vjust = -0.8, size = 3) +
-  labs(title = "Points vs average ball possession — Ligue 1 2017/18",
+  labs(title = "Points vs average ball possession - Ligue 1 2017/18",
        x = "Avg ball possession per game (%)", y = "Points")
 cor(l1$Difference.goals, l1$Points)
 ```
 
 Unsurprisingly, **goal difference** correlates very strongly with **points**, and the
-possession-vs-points scatter separates the dominant sides (PSG) from the pack — a small,
+possession-vs-points scatter separates the dominant sides (PSG) from the pack - a small,
 readable sports-analytics EDA.
 
 ---
