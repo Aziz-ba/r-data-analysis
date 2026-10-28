@@ -81,6 +81,9 @@ than a black-box call, to make the confusion matrix explicit:
 
 ```{r metrics}
 metrics <- function(CM) {
+  if (nrow(CM) != 2 || ncol(CM) != 2) {
+    stop("Confusion matrix must be 2x2. Check if both classes are present in predictions and actuals.")
+  }
   acc <- (CM[1,1] + CM[2,2]) / sum(CM)
   spc <- CM[1,1] / sum(CM[1, ])
   sen <- CM[2,2] / sum(CM[2, ])
