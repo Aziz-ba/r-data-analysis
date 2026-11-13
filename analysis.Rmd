@@ -31,7 +31,7 @@ library(datarium)
 data("marketing", package = "datarium")
 summary(marketing)
 model <- lm(sales ~ youtube + facebook + newspaper, data = marketing)
-summary(model)
+knitr::kable(coef(summary(model)), caption = "Marketing Regression Coefficients")
 ```
 
 Reading it: the coefficients and their p-values rank the channels. In this dataset the
@@ -47,7 +47,7 @@ library(MASS)
 library(corrplot)
 corrplot(cor(Boston), method = "color", tl.cex = 0.7)
 lm_medv <- lm(medv ~ lstat + age + rm, data = Boston)
-summary(lm_medv)
+knitr::kable(coef(summary(lm_medv)), caption = "Boston Housing Regression Coefficients")
 ```
 
 The correlation matrix and model show the well-known structure of this dataset: value falls
