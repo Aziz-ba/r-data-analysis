@@ -33,12 +33,52 @@ scripts are kept under [`TD1/`](TD1/), [`TP1/`](TP1/) and [`ExamenR/`](ExamenR/)
 
 ## 🚀 Reproduce it
 
+### Requirements & R Version
+
+- **R version:** R ≥ 4.0.0
+- **RStudio** (optional, recommended for interactive R Markdown editing)
+
+### Environment Setup & Execution
+
+To restore package dependencies using [`renv`](https://rstudio.github.io/renv/):
+
 ```r
-install.packages(c("MASS", "datarium", "ggplot2", "corrplot", "dplyr"))
+# Restore project package versions
+renv::restore()
+
+# Render report to HTML
+rmarkdown::render("analysis.Rmd")   # produces analysis.html
+```
+
+Alternatively, install required packages manually:
+
+```r
+install.packages(c("MASS", "datarium", "ggplot2", "corrplot", "dplyr", "rmarkdown", "renv"))
 rmarkdown::render("analysis.Rmd")   # produces analysis.html
 ```
 
 Or open any script in `TD1/` / `TP1/` in RStudio and run it directly.
+
+### Session Info
+
+Inspect active session details and loaded packages by running `sessionInfo()` in R:
+
+```r
+sessionInfo()
+```
+
+Example `sessionInfo()` output:
+```text
+R version 4.2.2 (2022-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 22.04 LTS
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggplot2_3.4.0  corrplot_0.92  MASS_7.3-58.1  datarium_0.1.0
+```
 
 ---
 
