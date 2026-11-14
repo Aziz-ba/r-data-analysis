@@ -123,3 +123,17 @@ readable sports-analytics EDA.
 - Regression: how to fit, read coefficients, and use a correlation heatmap to pick features.
 - Classification: a from-scratch confusion-matrix evaluation (accuracy / specificity / sensitivity).
 - EDA: framing and visualizing a domain question on real sports data.
+
+---
+
+# Reproducibility
+
+To reproduce this analysis and render the report:
+
+1. Ensure R (version >= 4.0.0) is installed.
+2. Restore package dependencies using `renv::restore()`.
+3. Render the R Markdown document using `rmarkdown::render("analysis.Rmd")`.
+
+```{r session-info}
+sessionInfo()
+```
